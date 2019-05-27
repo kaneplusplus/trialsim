@@ -294,4 +294,4 @@ Plot the Density of the Arm Durations
       ylab("Density") +
       theme_minimal()
 
-![](inst/README_files/figure-markdown_strict/unnamed-chunk-5-1.png)
+![](inst/README/README_files/figure-markdown_strict/unnamed-chunk-5-1.png)
