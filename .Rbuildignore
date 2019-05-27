@@ -1,0 +1,14 @@
+^Meta$
+^doc$
+^CRAN-RELEASE$
+^.*\.Rproj$
+^\.Rproj\.user$
+^data-raw$
+^README\.Rmd$
+^README-.*\.png$
+^\.travis\.yml$
+^CONDUCT\.md$
+^cran-comments\.md$
+^appveyor\.yml$
+^codecov\.yml$
+README.Rmd

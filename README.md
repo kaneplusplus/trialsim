@@ -1,0 +1,255 @@
+Simulate an Arm of a Clinical Trial
+-----------------------------------
+
+    library(trialsim)
+    library(purrr)
+    library(knitr)
+
+    # Generate enrollment with 1 enrolee per time period.
+    # Sample 2 trials each with 3 responses.
+    arm_enroll(10) %>%
+      arm_bin_resample(3, size = 2) %>% 
+      kable()
+
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">period</th>
+<th style="text-align: right;">enrolled</th>
+<th style="text-align: right;">response</th>
+<th style="text-align: right;">sim</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+
+    # Generate enrollment based on a poisson distribution with rate parameter 0.8
+    # then create all trial combinations with 3 responders.
+    arm_enroll(10, partial(rpois, n = 1, lambda = 0.8)) %>%
+      arm_bin_resample(3)
+
+    ## # A tibble: 7 x 4
+    ##   period enrolled response   sim
+    ##    <int>    <int>    <int> <int>
+    ## 1      3        1        0     1
+    ## 2      4        2        0     1
+    ## 3      5        1        0     1
+    ## 4      7        1        0     1
+    ## 5      8        1        0     1
+    ## 6     12        2        2     1
+    ## 7     13        2        1     1
+
+Simulate a Trial
+----------------
+
+    library(doParallel)
+    library(doRNG)
+    library(dplyr)
+
+    registerDoParallel()
+    registerDoRNG()
+
+    # Create the vemurafenib data set.
+    resps <- c(8, 0, 1, 1, 6, 2)
+    size <- c(19, 10, 26, 8, 14, 7)
+    name <- c("NSCLC", "CRC (vemu)", "CRC (vemu+cetu)", "Bile Duct", "ECD or LCH",
+              "ATC")
+
+    # Assume that the enrollment rate is inversely proportional to the
+    # number enrolled.
+    lambda <- size / max(size)
+
+    # Create a poisson sampler for each arm. Use the goofy !! notation.
+    sampler <- lapply(lambda, function(l) partial(rpois, n = 1, lambda = !!l))
+
+    # Use the sampler to change the enrollement duration.
+    # Resample 1000 trials in parallel and keep track of their lengths
+    trials <- trial_bin_resample(resps, size, name, 10000, sampler = sampler) %>%
+      group_by(name, sim) %>% 
+      summarize(trial_length = max(period))
+
+Get the Expected Arm Duration and SD
+------------------------------------
+
+    # Get the mean and sd of the trial durations.
+    trials %>%
+      group_by(name) %>% 
+      summarize(mean_length = mean(trial_length), sd_length = sd(trial_length)) %>%
+      kable()
+
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">name</th>
+<th style="text-align: right;">mean_length</th>
+<th style="text-align: right;">sd_length</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ATC</td>
+<td style="text-align: right;">26.5649</td>
+<td style="text-align: right;">9.831869</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bile Duct</td>
+<td style="text-align: right;">26.5832</td>
+<td style="text-align: right;">9.347963</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CRC (vemu)</td>
+<td style="text-align: right;">26.5418</td>
+<td style="text-align: right;">8.282350</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CRC (vemu+cetu)</td>
+<td style="text-align: right;">26.5075</td>
+<td style="text-align: right;">5.105933</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ECD or LCH</td>
+<td style="text-align: right;">26.4502</td>
+<td style="text-align: right;">7.006556</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NSCLC</td>
+<td style="text-align: right;">26.4702</td>
+<td style="text-align: right;">5.906742</td>
+</tr>
+</tbody>
+</table>
+
+Plot the Density of the Arm Durations
+-------------------------------------
+
+    library(ggplot2)
+    ggplot(trials, aes(x = trial_length, fill = name)) +
+      geom_density(alpha = 0.7) +
+      facet_grid( name ~ ., labeller = label_wrap_gen(width = 10)) +
+      scale_fill_manual(values = rep("black", length(unique(trials$name))), guide = FALSE) +
+      xlab("Enrollment Duration Density") +
+      ylab("Density") +
+      theme_minimal()
+
+![](README_files/figure-markdown_strict/unnamed-chunk-5-1.png)

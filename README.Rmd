@@ -1,0 +1,85 @@
+---
+title: "Resampling Trials with trialsim"
+author: "Michael Kane"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Simulate an Arm of a Clinical Trial
+
+```{r warning = FALSE, message = FALSE}
+library(trialsim)
+library(purrr)
+library(knitr)
+
+# Generate enrollment with 1 enrolee per time period.
+# Sample 2 trials each with 3 responses.
+arm_enroll(10) %>%
+  arm_bin_resample(3, size = 2) %>% 
+  kable()
+```
+
+```{r warning = FALSE, message = FALSE}
+# Generate enrollment based on a poisson distribution with rate parameter 0.8
+# then create all trial combinations with 3 responders.
+arm_enroll(10, partial(rpois, n = 1, lambda = 0.8)) %>%
+  arm_bin_resample(3)
+```
+
+## Simulate a Trial
+
+```{r, warning = FALSE, message=FALSE}
+library(doParallel)
+library(doRNG)
+library(dplyr)
+
+registerDoParallel()
+registerDoRNG()
+
+# Create the vemurafenib data set.
+resps <- c(8, 0, 1, 1, 6, 2)
+size <- c(19, 10, 26, 8, 14, 7)
+name <- c("NSCLC", "CRC (vemu)", "CRC (vemu+cetu)", "Bile Duct", "ECD or LCH",
+          "ATC")
+
+# Assume that the enrollment rate is inversely proportional to the
+# number enrolled.
+lambda <- size / max(size)
+
+# Create a poisson sampler for each arm. Use the goofy !! notation.
+sampler <- lapply(lambda, function(l) partial(rpois, n = 1, lambda = !!l))
+
+# Use the sampler to change the enrollement duration.
+# Resample 1000 trials in parallel and keep track of their lengths
+trials <- trial_bin_resample(resps, size, name, 10000, sampler = sampler) %>%
+  group_by(name, sim) %>% 
+  summarize(trial_length = max(period))
+```
+
+## Get the Expected Arm Duration and SD
+
+```{r messages = FALSE, warning = FALSE}
+# Get the mean and sd of the trial durations.
+trials %>%
+  group_by(name) %>% 
+  summarize(mean_length = mean(trial_length), sd_length = sd(trial_length)) %>%
+  kable()
+```
+
+## Plot the Density of the Arm Durations
+
+```{r warning = FALSE, message = FALSE}
+library(ggplot2)
+ggplot(trials, aes(x = trial_length, fill = name)) +
+  geom_density(alpha = 0.7) +
+  facet_grid( name ~ ., labeller = label_wrap_gen(width = 10)) +
+  scale_fill_manual(values = rep("black", length(unique(trials$name))), guide = FALSE) +
+  xlab("Enrollment Duration Density") +
+  ylab("Density") +
+  theme_minimal()
+
+```
+
