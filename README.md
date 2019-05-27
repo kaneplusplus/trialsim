@@ -54,19 +54,19 @@ Simulate an Arm of a Clinical Trial
 <tr class="even">
 <td style="text-align: right;">6</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">8</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="odd">
@@ -78,7 +78,7 @@ Simulate an Arm of a Clinical Trial
 <tr class="even">
 <td style="text-align: right;">10</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="odd">
@@ -102,13 +102,13 @@ Simulate an Arm of a Clinical Trial
 <tr class="even">
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="even">
@@ -120,7 +120,7 @@ Simulate an Arm of a Clinical Trial
 <tr class="odd">
 <td style="text-align: right;">7</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="even">
@@ -132,7 +132,7 @@ Simulate an Arm of a Clinical Trial
 <tr class="odd">
 <td style="text-align: right;">9</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="even">
@@ -144,21 +144,63 @@ Simulate an Arm of a Clinical Trial
 </tbody>
 </table>
 
+Simulate an Arm of a Clinical Trial with Poisson Enrollment
+-----------------------------------------------------------
+
     # Generate enrollment based on a poisson distribution with rate parameter 0.8
     # then create all trial combinations with 3 responders.
     arm_enroll(10, partial(rpois, n = 1, lambda = 0.8)) %>%
-      arm_bin_resample(3)
+      arm_bin_resample(3) %>%
+      kable()
 
-    ## # A tibble: 7 x 4
-    ##   period enrolled response   sim
-    ##    <int>    <int>    <int> <int>
-    ## 1      3        1        0     1
-    ## 2      4        2        0     1
-    ## 3      5        1        0     1
-    ## 4      7        1        0     1
-    ## 5      8        1        0     1
-    ## 6     12        2        2     1
-    ## 7     13        2        1     1
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">period</th>
+<th style="text-align: right;">enrolled</th>
+<th style="text-align: right;">response</th>
+<th style="text-align: right;">sim</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
 
 Simulate a Trial
 ----------------
@@ -181,11 +223,11 @@ Simulate a Trial
     lambda <- size / max(size)
 
     # Create a poisson sampler for each arm. Use the goofy !! notation.
-    sampler <- lapply(lambda, function(l) partial(rpois, n = 1, lambda = !!l))
+    psampler <- lapply(lambda, function(l) partial(rpois, n = 1, lambda = !!l))
 
     # Use the sampler to change the enrollement duration.
     # Resample 1000 trials in parallel and keep track of their lengths
-    trials <- trial_bin_resample(resps, size, name, 10000, sampler = sampler) %>%
+    trials <- trial_bin_resample(resps, size, name, 1000, sampler = psampler) %>%
       group_by(name, sim) %>% 
       summarize(trial_length = max(period))
 
@@ -209,33 +251,33 @@ Get the Expected Arm Duration and SD
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">ATC</td>
-<td style="text-align: right;">26.5649</td>
-<td style="text-align: right;">9.831869</td>
+<td style="text-align: right;">26.418</td>
+<td style="text-align: right;">9.960748</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Bile Duct</td>
-<td style="text-align: right;">26.5832</td>
-<td style="text-align: right;">9.347963</td>
+<td style="text-align: right;">26.624</td>
+<td style="text-align: right;">9.285518</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">CRC (vemu)</td>
-<td style="text-align: right;">26.5418</td>
-<td style="text-align: right;">8.282350</td>
+<td style="text-align: right;">26.991</td>
+<td style="text-align: right;">8.511131</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">CRC (vemu+cetu)</td>
-<td style="text-align: right;">26.5075</td>
-<td style="text-align: right;">5.105933</td>
+<td style="text-align: right;">26.625</td>
+<td style="text-align: right;">5.255092</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">ECD or LCH</td>
-<td style="text-align: right;">26.4502</td>
-<td style="text-align: right;">7.006556</td>
+<td style="text-align: right;">26.475</td>
+<td style="text-align: right;">6.696583</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">NSCLC</td>
-<td style="text-align: right;">26.4702</td>
-<td style="text-align: right;">5.906742</td>
+<td style="text-align: right;">26.355</td>
+<td style="text-align: right;">5.791936</td>
 </tr>
 </tbody>
 </table>

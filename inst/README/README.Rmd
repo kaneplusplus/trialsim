@@ -22,11 +22,14 @@ arm_enroll(10) %>%
   kable()
 ```
 
+## Simulate an Arm of a Clinical Trial with Poisson Enrollment
+
 ```{r warning = FALSE, message = FALSE}
 # Generate enrollment based on a poisson distribution with rate parameter 0.8
 # then create all trial combinations with 3 responders.
 arm_enroll(10, partial(rpois, n = 1, lambda = 0.8)) %>%
-  arm_bin_resample(3)
+  arm_bin_resample(3) %>%
+  kable()
 ```
 
 ## Simulate a Trial
@@ -50,11 +53,11 @@ name <- c("NSCLC", "CRC (vemu)", "CRC (vemu+cetu)", "Bile Duct", "ECD or LCH",
 lambda <- size / max(size)
 
 # Create a poisson sampler for each arm. Use the goofy !! notation.
-sampler <- lapply(lambda, function(l) partial(rpois, n = 1, lambda = !!l))
+psampler <- lapply(lambda, function(l) partial(rpois, n = 1, lambda = !!l))
 
 # Use the sampler to change the enrollement duration.
 # Resample 1000 trials in parallel and keep track of their lengths
-trials <- trial_bin_resample(resps, size, name, 10000, sampler = sampler) %>%
+trials <- trial_bin_resample(resps, size, name, 1000, sampler = psampler) %>%
   group_by(name, sim) %>% 
   summarize(trial_length = max(period))
 ```
