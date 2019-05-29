@@ -1,4 +1,16 @@
 
+#' @importFrom crayon red
+copy_closure <- function(closure) {
+  if (!is.function(closure)) {
+    stop(red("Argument is not a closure."))
+  }
+  ret <- closure
+  environment(ret) <- 
+    as.environment(as.list(environment(closure), all.names = TRUE))
+  parent.env(environment(ret)) <- parent.env(environment(closure))
+  ret
+}
+
 #' Resample Trial Enrollment and Binary Outcomes
 #'
 #' @param resps the number of responses per arm.
@@ -12,7 +24,7 @@
 #' @importFrom foreach foreach getDoParWorkers getDoParName
 #' @importFrom itertools isplitVector
 #' @export
-trial_bin_resample <- function(resps, size, name, num_samples,
+bin_trial_resample <- function(resps, size, name, num_samples,
   sampler = lapply(seq_along(resps), function(x) function() 1)) {
 
   if (is.null(getDoParName())) {
@@ -31,9 +43,12 @@ trial_bin_resample <- function(resps, size, name, num_samples,
           chunks = round(getDoParWorkers())), .combine = bind_rows) %dorng% {
 
     foreach(i = it, .combine = bind_rows) %do% {
+      # copy the resampler in case it maintains state.
+      sampler_copy <- sapply(sampler, copy_closure)
       foreach(j = seq_along(resps), .combine = bind_rows) %do% {
-        arm <- arm_bin_resample(arm_enroll(size[j], sampler = sampler[[j]]), 
-                                resps[j])
+        arm <- arm_bin_resample(arm_enroll(size[j], 
+                                           sampler = sampler_copy[[j]]), 
+                                           resps[j])
         arm$name <- name[j]
         arm$sim <- i
         arm
