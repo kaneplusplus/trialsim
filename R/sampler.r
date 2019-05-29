@@ -10,13 +10,12 @@
 fixed_duration_sampler <- function(size, max_duration = max(size),
                                    multi_enroll_period = TRUE) {
   lapply(size,
-    function(i) {
-      fixed_duration_single_sampler(size[i], max_duration, multi_enroll_period)
+    function(s) {
+      fixed_duration_single_sampler(s, max_duration, multi_enroll_period)
     })
 }
 
-fixed_duration_single_sampler <- function(size, duration,   
-                                          multi_period_enroll) {
+fixed_duration_single_sampler <- function(size, duration, multi_enroll_period) {
   et <- sample.int(duration, size, replace = !multi_enroll_period)
   enrollment <- rep(0, duration)
   for (e in et) {
