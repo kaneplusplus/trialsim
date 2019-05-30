@@ -35,6 +35,7 @@ fixed_duration_single_sampler <- function(size, duration, multi_enroll_period) {
 #'
 #' @param lambda the poisson rate parameter (one per arm).
 #' @importFrom purrr partial map
+#' @importFrom rlang !!
 #' @export
 poisson_sampler <- function(lambda) {
   # Note lapply doesn't work. Probably rlang bullshit.
