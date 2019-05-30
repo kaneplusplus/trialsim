@@ -52,12 +52,9 @@ name <- c("NSCLC", "CRC (vemu)", "CRC (vemu+cetu)", "Bile Duct", "ECD or LCH",
 # number enrolled.
 lambda <- size / max(size)
 
-# Create a poisson sampler for each arm. Use the goofy !! notation.
-psampler <- lapply(lambda, function(l) partial(rpois, n = 1, lambda = !!l))
-
 # Use the sampler to change the enrollement duration.
 # Resample 1000 trials in parallel and keep track of their lengths
-trials <- trial_bin_resample(resps, size, name, 1000, sampler = psampler) %>%
+trials <- bin_trial_resample(resps, size, name, 1000, sampler = poisson_sampler(lambda)) %>%
   group_by(name, sim) %>% 
   summarize(trial_length = max(period))
 ```

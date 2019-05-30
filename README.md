@@ -48,13 +48,13 @@ Simulate an Arm of a Clinical Trial
 <tr class="odd">
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">6</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="odd">
@@ -84,25 +84,25 @@ Simulate an Arm of a Clinical Trial
 <tr class="odd">
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="odd">
@@ -114,13 +114,13 @@ Simulate an Arm of a Clinical Trial
 <tr class="even">
 <td style="text-align: right;">6</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="even">
@@ -164,14 +164,14 @@ Simulate an Arm of a Clinical Trial with Poisson Enrollment
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 </tr>
@@ -182,19 +182,25 @@ Simulate an Arm of a Clinical Trial with Poisson Enrollment
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">3</td>
+<td style="text-align: right;">9</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">7</td>
+<td style="text-align: right;">15</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">10</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">22</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
@@ -222,12 +228,9 @@ Simulate a Trial
     # number enrolled.
     lambda <- size / max(size)
 
-    # Create a poisson sampler for each arm. Use the goofy !! notation.
-    psampler <- lapply(lambda, function(l) partial(rpois, n = 1, lambda = !!l))
-
     # Use the sampler to change the enrollement duration.
     # Resample 1000 trials in parallel and keep track of their lengths
-    trials <- trial_bin_resample(resps, size, name, 1000, sampler = psampler) %>%
+    trials <- bin_trial_resample(resps, size, name, 1000, sampler = poisson_sampler(lambda)) %>%
       group_by(name, sim) %>% 
       summarize(trial_length = max(period))
 
@@ -251,33 +254,33 @@ Get the Expected Arm Duration and SD
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">ATC</td>
-<td style="text-align: right;">26.418</td>
-<td style="text-align: right;">9.960748</td>
+<td style="text-align: right;">26.465</td>
+<td style="text-align: right;">9.886785</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Bile Duct</td>
-<td style="text-align: right;">26.624</td>
-<td style="text-align: right;">9.285518</td>
+<td style="text-align: right;">26.632</td>
+<td style="text-align: right;">9.528030</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">CRC (vemu)</td>
-<td style="text-align: right;">26.991</td>
-<td style="text-align: right;">8.511131</td>
+<td style="text-align: right;">25.792</td>
+<td style="text-align: right;">8.130735</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">CRC (vemu+cetu)</td>
-<td style="text-align: right;">26.625</td>
-<td style="text-align: right;">5.255092</td>
+<td style="text-align: right;">26.643</td>
+<td style="text-align: right;">5.233253</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">ECD or LCH</td>
-<td style="text-align: right;">26.475</td>
-<td style="text-align: right;">6.696583</td>
+<td style="text-align: right;">26.203</td>
+<td style="text-align: right;">6.597068</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">NSCLC</td>
-<td style="text-align: right;">26.355</td>
-<td style="text-align: right;">5.791936</td>
+<td style="text-align: right;">26.463</td>
+<td style="text-align: right;">6.039960</td>
 </tr>
 </tbody>
 </table>
