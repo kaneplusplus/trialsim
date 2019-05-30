@@ -34,10 +34,8 @@ fixed_duration_single_sampler <- function(size, duration, multi_enroll_period) {
 #' Sample Enrollment from a Poisson Distribution
 #'
 #' @param lambda the poisson rate parameter (one per arm).
-#' @importFrom purrr partial map
-#' @importFrom rlang !!
+#' @importFrom purrr partial 
 #' @export
 poisson_sampler <- function(lambda) {
-  # Note lapply doesn't work. Probably rlang bullshit.
-  map(lambda, function(l) partial(rpois, n = 1, lambda = !!l))
+  lapply(lambda, function(l) partial(rpois, n = 1, lambda = l, .lazy = FALSE))
 }
