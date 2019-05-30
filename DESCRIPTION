@@ -1,6 +1,6 @@
 Package: trialsim
 Title: Simulate Trial Outcomes 
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
   person(given = "Michael J.", 
          family = "Kane",
