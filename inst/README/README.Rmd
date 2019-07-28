@@ -4,6 +4,9 @@ author: "Michael Kane"
 output: md_document
 ---
 
+[![Travis Build Status](https://travis-ci.org/kaneplusplus/trialsim.svg?branch=master)](https://travis-ci.org/kaneplusplus/trialsim)
+[![Coverage Status](https://codecov.io/gh/kaneplusplus/trialsim/branch/master/graph/badge.svg)](https://codecov.io/gh/kaneplusplus/trialsim)
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```

@@ -1,3 +1,4 @@
+[![codecov](https://codecov.io/gh/kaneplusplus/trialsim/branch/master/graph/badge.svg)](https://codecov.io/gh/kaneplusplus/trialsim)
 
 Simulate an Arm of a Clinical Trial
 -----------------------------------
