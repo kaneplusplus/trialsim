@@ -15,6 +15,8 @@ fixed_duration_sampler <- function(size, max_duration = max(size),
     })
 }
 
+# Mutable closure that samples a specified number of enrollments (size)
+# for a specified duration, and returns them sequentially.
 fixed_duration_single_sampler <- function(size, duration, multi_enroll_period) {
   et <- sample.int(duration, size, replace = !multi_enroll_period)
   enrollment <- rep(0, duration)
