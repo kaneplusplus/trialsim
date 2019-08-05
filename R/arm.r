@@ -36,6 +36,7 @@ arm_enroll <- function(size, sampler = function() 1, init_period = 0L) {
 #' @export
 arm_bin_resample <- function(arm, resps, size = 1) {
   x <- sum(arm$enrolled)
+  j <- NULL
   foreach (j = seq_len(size), .combine = bind_rows) %do% {
     a <- arm
     resp_enrollees <- sample.int(sum(a$enrolled), resps)
@@ -61,6 +62,7 @@ arm_bin_resample <- function(arm, resps, size = 1) {
 #' getDoParWorkers
 #' @importFrom itertools isplitVector
 #' @importFrom dplyr bind_rows
+#' @importFrom utils combn
 #' @export
 arm_bin_combn <- function(arm, resps) {
   if (is.null(getDoParName())) {
@@ -72,6 +74,7 @@ arm_bin_combn <- function(arm, resps) {
   for (i in seq_len(nrow(arm))[-1]) {
     arm$enroll_num[[i]] <- arm$enroll_num[[i]] + max(arm$enroll_num[[i-1]])
   }
+  it <- NULL
   foreach(it = isplitVector(seq_len(ncol(ro)), 
                             chunks = round(getDoParWorkers())),
           .combine = bind_rows) %dopar% {

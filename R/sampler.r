@@ -36,6 +36,7 @@ fixed_duration_single_sampler <- function(size, duration, multi_enroll_period) {
 #' Sample Enrollment from a Poisson Distribution
 #'
 #' @param lambda the poisson rate parameter (one per arm).
+#' @importFrom stats rpois
 #' @importFrom purrr partial 
 #' @export
 poisson_sampler <- function(lambda) {

@@ -1,3 +1,4 @@
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Build Status](https://travis-ci.org/kaneplusplus/trialsim.svg?branch=master)](https://travis-ci.org/kaneplusplus/trialsim)
 [![Build status](https://ci.appveyor.com/api/projects/status/mdk2vheejjkq1plm/branch/master?svg=true)](https://ci.appveyor.com/project/kaneplusplus/trialsim/branch/master)
 [![codecov](https://codecov.io/gh/kaneplusplus/trialsim/branch/master/graph/badge.svg)](https://codecov.io/gh/kaneplusplus/trialsim)

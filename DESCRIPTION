@@ -16,7 +16,9 @@ Imports:
   foreach,
   itertools,
   dplyr,
-  doRNG
+  doRNG,
+  purrr,
+  crayon
 Suggests: 
     testthat (>= 2.1.0),
     covr

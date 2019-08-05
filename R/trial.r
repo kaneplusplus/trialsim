@@ -39,6 +39,9 @@ bin_trial_resample <- function(resps, size, name, num_samples,
     stop(red("You must specify one sampler per arm."))
   }
 
+  it <- NULL
+  i <- NULL
+  j <- NULL
   foreach(it = isplitVector(seq_len(num_samples), 
           chunks = round(getDoParWorkers())), .combine = bind_rows) %dorng% {
 
